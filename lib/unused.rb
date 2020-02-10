@@ -9,8 +9,10 @@ module Unused
   def self.start
     DefinitionListener.instance.enable
     CallListener.instance.enable
-    at_exit do
-      Registry.report
-    end
+  end
+
+  def self.stop
+    DefinitionListener.instance.disable
+    CallListener.instance.disable
   end
 end

@@ -6,7 +6,7 @@ require_relative './reporter'
 module Unused
   class Registry
     include Singleton
-
+    # delegate class method calls to instance
     def self.register(defined_class)
       instance.register(defined_class)
     end
@@ -27,7 +27,21 @@ module Unused
       instance.tracked_objects
     end
 
+    def self.class_method_calls
+      instance.class_method_calls
+    end
+
+    def self.instance_method_calls
+      instance.instance_method_calls
+    end
+
     def initialize
+      @class_method_calls = {}
+      @instance_method_calls = {}
+      @class_id_map = {}
+    end
+
+    def reset
       @class_method_calls = {}
       @instance_method_calls = {}
       @class_id_map = {}
@@ -40,8 +54,10 @@ module Unused
     def register(defined_class)
       id = defined_class.object_id
       @class_id_map[id] = defined_class.to_s
+      instance_methods = defined_class.instance_methods(false) +
+                         defined_class.private_instance_methods(false)
 
-      defined_class.instance_methods(false).each do |method|
+      instance_methods.each do |method|
         key = [id, method]
         next if @instance_method_calls.key?(key)
 
@@ -76,6 +92,16 @@ module Unused
       print(@class_method_calls, "\n")
     end
 
+    def instance_method_calls
+      # getter returns clone so as not to allow mutation
+      @instance_method_calls.clone
+    end
+
+    def class_method_calls
+      # getter returns clone so as not to allow mutation
+      @class_method_calls.clone
+    end
+
     private
 
     def register_class_methods(defined_class)
@@ -84,7 +110,10 @@ module Unused
       # or when calling Class#singleton_class
       # Thus, to prevent a needless allocation, check if there is
       # any need to register the singleton
-      class_methods = defined_class.methods(false)
+
+      # :inherited and :initialize defined on all classes
+      class_methods = defined_class.private_methods(false) - %i[inherited initialize]
+      class_methods += defined_class.methods(false)
       return if class_methods.empty?
 
       singleton_id = defined_class.singleton_class.object_id
