@@ -111,6 +111,25 @@ module Unused
             .to match_array [[class_id, :new_method], [class_id, :method1]]
         end
       end
+
+      context 'with configuration' do
+        before do
+          Unused.configure do |config|
+            config.path = File.expand_path(__dir__) + "../helpers/sample_class.rb"
+          end
+        end
+
+        after do
+          Unused.configure do |config|
+            config.path = Dir.pwd
+          end
+        end
+
+        it 'ignores methods defined outside configured path' do
+          expect { Registry.register(SampleModule) }.
+            not_to(change { Registry.instance_method_calls })
+        end
+      end
     end
 
     describe '.tracked_objects' do

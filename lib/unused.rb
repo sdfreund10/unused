@@ -4,6 +4,7 @@ require_relative 'unused/registry'
 require_relative 'unused/reporter'
 require_relative 'unused/definition_listener'
 require_relative 'unused/call_listener'
+require_relative 'unused/configuration'
 
 module Unused
   def self.start
@@ -14,5 +15,13 @@ module Unused
   def self.stop
     DefinitionListener.instance.disable
     CallListener.instance.disable
+  end
+
+  def self.config
+    Configuration.instance
+  end
+
+  def self.configure
+    yield config
   end
 end

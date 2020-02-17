@@ -61,6 +61,9 @@ module Unused
         key = [id, method]
         next if @instance_method_calls.key?(key)
 
+        source, = defined_class.instance_method(method).source_location
+        next unless source.start_with? Unused.config.path
+
         @instance_method_calls.store(key, 0)
       end
 
@@ -121,6 +124,9 @@ module Unused
       class_methods.each do |method|
         key = [singleton_id, method]
         next if @class_method_calls.key?(key)
+
+        source, = defined_class.method(method).source_location
+        next unless !source.nil? && source.start_with?(Unused.config.path)
 
         @class_method_calls.store(key, 0)
       end

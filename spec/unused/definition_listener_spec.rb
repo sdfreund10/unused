@@ -17,9 +17,9 @@ module Unused
 
     it 'adds class and methods to registry' do
       class DefinitionListenerTestClass1
-        def method; end
+        def instance_method; end
 
-        def self.method; end
+        def self.class_method; end
       end
       expect(Registry.tracked_objects).to match_array [
         DefinitionListenerTestClass1.object_id,
@@ -27,10 +27,10 @@ module Unused
       ]
 
       expect(Registry.instance_method_calls).to include(
-        [DefinitionListenerTestClass1.object_id, :method] => 0
+        [DefinitionListenerTestClass1.object_id, :instance_method] => 0
       )
       expect(Registry.class_method_calls).to include(
-        [DefinitionListenerTestClass1.singleton_class.object_id, :method] => 0
+        [DefinitionListenerTestClass1.singleton_class.object_id, :class_method] => 0
       )
     end
 
