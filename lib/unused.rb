@@ -24,4 +24,8 @@ module Unused
   def self.configure
     yield config
   end
+
+  def self.report
+    Reporter.call
+  end
 end

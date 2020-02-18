@@ -19,10 +19,6 @@ module Unused
       instance.log_class_method(callee_id, method_id)
     end
 
-    def self.report
-      instance.report
-    end
-
     def self.tracked_objects
       instance.tracked_objects
     end
@@ -33,6 +29,10 @@ module Unused
 
     def self.instance_method_calls
       instance.instance_method_calls
+    end
+
+    def self.class_map
+      instance.class_map
     end
 
     def initialize
@@ -53,7 +53,7 @@ module Unused
 
     def register(defined_class)
       id = defined_class.object_id
-      @class_id_map[id] = defined_class.to_s
+      @class_id_map[id] = defined_class
       instance_methods = defined_class.instance_methods(false) +
                          defined_class.private_instance_methods(false)
 
@@ -62,7 +62,10 @@ module Unused
         next if @instance_method_calls.key?(key)
 
         source, = defined_class.instance_method(method).source_location
-        next unless source.start_with? Unused.config.path
+        unless source &&
+               File.expand_path(source).start_with?(Unused.config.path)
+          next
+        end
 
         @instance_method_calls.store(key, 0)
       end
@@ -90,11 +93,6 @@ module Unused
       increment_instance_method_call(hash_key)
     end
 
-    def report
-      print(@instance_method_calls, "\n")
-      print(@class_method_calls, "\n")
-    end
-
     def instance_method_calls
       # getter returns clone so as not to allow mutation
       @instance_method_calls.clone
@@ -103,6 +101,11 @@ module Unused
     def class_method_calls
       # getter returns clone so as not to allow mutation
       @class_method_calls.clone
+    end
+
+    def class_map
+      # getter returns clone so as not to allow mutation
+      @class_id_map.clone
     end
 
     private
@@ -115,18 +118,22 @@ module Unused
       # any need to register the singleton
 
       # :inherited and :initialize defined on all classes
-      class_methods = defined_class.private_methods(false) - %i[inherited initialize]
+      class_methods = defined_class.private_methods(false) -
+                      %i[inherited initialize]
       class_methods += defined_class.methods(false)
       return if class_methods.empty?
 
       singleton_id = defined_class.singleton_class.object_id
-      @class_id_map[singleton_id] = defined_class.to_s
+      @class_id_map[singleton_id] = defined_class
       class_methods.each do |method|
         key = [singleton_id, method]
         next if @class_method_calls.key?(key)
 
         source, = defined_class.method(method).source_location
-        next unless !source.nil? && source.start_with?(Unused.config.path)
+        unless source &&
+               File.expand_path(source).start_with?(Unused.config.path)
+          next
+        end
 
         @class_method_calls.store(key, 0)
       end
