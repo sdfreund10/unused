@@ -17,6 +17,7 @@ module Unused
 
     it 'adds class and methods to registry' do
       class DefinitionListenerTestClass1
+        create_alias_methods(self)
         def instance_method; end
 
         def self.class_method; end
@@ -39,6 +40,7 @@ module Unused
 
     it 'adds methods on re-defined classes' do
       class DefinitionListenerTestClass2
+        create_alias_methods(self)
         def method; end
       end
       class_id = DefinitionListenerTestClass2.object_id
@@ -57,6 +59,7 @@ module Unused
 
     it 'registers meta-programed methods from parent' do
       class DefinitionListenerParentClass1
+        create_alias_methods(self)
         def self.make_method(method_name)
           define_method(method_name) {}
         end
@@ -75,6 +78,7 @@ module Unused
 
     it 'does not register inherited methods' do
       class DefinitionListenerParentClass2
+        create_alias_methods(self)
         def self.parent_method; end
       end
 
@@ -96,6 +100,7 @@ module Unused
       # probably not worth it
 
       class DefinitionalListenerRuntimeMethodTestClass
+        create_alias_methods(self)
       end
 
       DefinitionalListenerRuntimeMethodTestClass

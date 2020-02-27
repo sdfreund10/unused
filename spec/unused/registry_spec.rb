@@ -93,6 +93,7 @@ module Unused
 
         it 'adds new methods' do
           class RegistryTestRedefinitionClass
+            create_alias_methods(self)
             def method1; end
           end
           Registry.register(RegistryTestRedefinitionClass)
@@ -109,26 +110,6 @@ module Unused
           class_id = RegistryTestRedefinitionClass.object_id
           expect(Registry.instance_method_calls.keys)
             .to match_array [[class_id, :new_method], [class_id, :method1]]
-        end
-      end
-
-      context 'with configuration' do
-        before do
-          Unused.configure do |config|
-            config.path = File.expand_path(__dir__) +
-                          '../helpers/sample_class.rb'
-          end
-        end
-
-        after do
-          Unused.configure do |config|
-            config.path = Dir.pwd
-          end
-        end
-
-        it 'ignores methods defined outside configured path' do
-          expect { Registry.register(SampleModule) }
-            .not_to(change { Registry.instance_method_calls })
         end
       end
     end
@@ -153,9 +134,8 @@ module Unused
       end
 
       it 'increments call counter' do
-        method = SampleClass.instance_methods(false).sample
-        key = [SampleClass.object_id, method]
-        expect { subject.log_instance_method(SampleClass.object_id, method) }
+        key = [SampleClass.object_id, :instance_method]
+        expect { subject.log_instance_method(SampleClass.object_id, :instance_method) }
           .to change { subject.instance_method_calls[key] }.from(0).to(1)
       end
 
@@ -176,8 +156,7 @@ module Unused
       end
 
       it 'increments call counter' do
-        method = SampleClass.methods(false).sample
-        key = [SampleClass.singleton_class.object_id, method]
+        key = [SampleClass.singleton_class.object_id, :class_method]
         expect { subject.log_class_method(*key) }
           .to change { subject.class_method_calls[key] }.from(0).to(1)
       end

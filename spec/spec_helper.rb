@@ -2,10 +2,12 @@
 
 require 'pry'
 require_relative '../lib/unused'
+require_relative './helpers/helpers.rb'
 require_relative './helpers/sample_class'
 
 Unused.configure do |config|
   config.report_at_exit = false
+  config.path = __dir__
 end
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration

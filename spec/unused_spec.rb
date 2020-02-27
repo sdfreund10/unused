@@ -10,7 +10,7 @@ RSpec.describe Unused do
 
     before do
       Unused.configure do |config|
-        config.path = File.expand_path('./spec/helpers/integration/csv_output')
+        config.path = File.expand_path(__dir__, 'helpers/integration/csv_output')
         config.output_file = output_file
       end
       Unused.start
@@ -18,7 +18,7 @@ RSpec.describe Unused do
 
     after do
       Unused.stop
-      Unused.configure { |config| config.path = Dir.pwd }
+      Unused.configure { |config| config.path = File.expand_path(__dir__) }
       FileUtils.rm(output_file)
     end
 

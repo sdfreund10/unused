@@ -23,6 +23,8 @@ module Unused
 
     def define_tracepoint
       TracePoint.new(:end) do |tp|
+        next unless tp.path.start_with?(Unused.config.path)
+
         Registry.register(tp.self)
       end
     end

@@ -2,8 +2,10 @@
 
 require_relative './sample_module'
 require_relative './extend_module'
+require_relative './helpers'
 
 class SampleClass
+  create_alias_methods(self)
   include SampleModule
   extend ExtendModule
 

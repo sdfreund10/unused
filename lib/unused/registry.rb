@@ -52,16 +52,17 @@ module Unused
     end
 
     def register(defined_class)
-      id = defined_class.object_id
+      id = defined_class._object_id_UNUSED_ALIAS_
       @class_id_map[id] = defined_class
-      instance_methods = defined_class.instance_methods(false) +
-                         defined_class.private_instance_methods(false)
+      instance_methods = defined_class._instance_methods_UNUSED_ALIAS_(false) +
+                         defined_class._private_instance_methods_UNUSED_ALIAS_(false)
 
       instance_methods.each do |method|
         key = [id, method]
         next if @instance_method_calls.key?(key)
+        next if method.to_s.include? '_UNUSED_ALIAS_'
 
-        source, = defined_class.instance_method(method).source_location
+        source, = defined_class._instance_method_UNUSED_ALIAS_(method).source_location
         unless source &&
                File.expand_path(source).start_with?(Unused.config.path)
           next
@@ -118,18 +119,19 @@ module Unused
       # any need to register the singleton
 
       # :inherited and :initialize defined on all classes
-      class_methods = defined_class.private_methods(false) -
+      class_methods = defined_class._private_methods_UNUSED_ALIAS_(false) -
                       %i[inherited initialize]
-      class_methods += defined_class.methods(false)
+      class_methods += defined_class._methods_UNUSED_ALIAS_(false)
       return if class_methods.empty?
 
-      singleton_id = defined_class.singleton_class.object_id
+      singleton_id = defined_class._singleton_class_UNUSED_ALIAS_.object_id
       @class_id_map[singleton_id] = defined_class
       class_methods.each do |method|
         key = [singleton_id, method]
         next if @class_method_calls.key?(key)
+        next if method.to_s.include? '_UNUSED_ALIAS_'
 
-        source, = defined_class.method(method).source_location
+        source, = defined_class._method_UNUSED_ALIAS_(method).source_location
         unless source &&
                File.expand_path(source).start_with?(Unused.config.path)
           next

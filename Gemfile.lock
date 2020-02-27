@@ -1,3 +1,8 @@
+PATH
+  remote: .
+  specs:
+    unused (0.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -7,6 +12,7 @@ GEM
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
+    rake (12.3.3)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
@@ -26,7 +32,9 @@ PLATFORMS
 
 DEPENDENCIES
   pry
+  rake (~> 12.0)
   rspec
+  unused!
 
 BUNDLED WITH
    2.1.4

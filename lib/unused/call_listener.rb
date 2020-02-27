@@ -23,9 +23,11 @@ module Unused
 
     def define_tracepoint
       TracePoint.new(:call) do |tp|
+        next unless tp.path.start_with?(Unused.config.path)
+
         tracked_objects = Registry.tracked_objects
         method = tp.method_id
-        owner = tp.self.method(method).owner
+        owner = tp.self._method_UNUSED_ALIAS_(method).owner
         next unless tracked_objects.include? owner.object_id
 
         if owner.singleton_class?
