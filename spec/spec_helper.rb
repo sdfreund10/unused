@@ -4,6 +4,10 @@ require 'pry'
 require_relative '../lib/unused'
 require_relative './helpers/sample_class'
 
+Unused.configure do |config|
+  config.report_at_exit = false
+end
+
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|

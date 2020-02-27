@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 module Unused
-  RSpec.describe Method do
+  RSpec.describe Reporters::Method do
     let(:truncated_file_path) do
       __FILE__.sub(Unused.config.path, '')
     end
@@ -16,7 +16,7 @@ module Unused
       end
 
       let(:subject) do
-        Method.new(
+        Reporters::Method.new(
           :method1,
           MethodSpecInstanceMethodSample,
           'instance',
@@ -52,7 +52,7 @@ module Unused
       end
 
       let(:subject) do
-        Method.new(
+        Reporters::Method.new(
           :method1,
           MethodSpecClassMethodSample,
           'class',

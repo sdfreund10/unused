@@ -10,6 +10,7 @@ module Unused
   def self.start
     DefinitionListener.instance.enable
     CallListener.instance.enable
+    at_exit { report } if config.report_at_exit
   end
 
   def self.stop

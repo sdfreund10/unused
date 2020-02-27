@@ -30,7 +30,10 @@ module Unused
         [DefinitionListenerTestClass1.object_id, :instance_method] => 0
       )
       expect(Registry.class_method_calls).to include(
-        [DefinitionListenerTestClass1.singleton_class.object_id, :class_method] => 0
+        [
+          DefinitionListenerTestClass1.singleton_class.object_id,
+          :class_method
+        ] => 0
       )
     end
 

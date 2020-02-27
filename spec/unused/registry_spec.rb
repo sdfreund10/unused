@@ -115,7 +115,8 @@ module Unused
       context 'with configuration' do
         before do
           Unused.configure do |config|
-            config.path = File.expand_path(__dir__) + "../helpers/sample_class.rb"
+            config.path = File.expand_path(__dir__) +
+                          '../helpers/sample_class.rb'
           end
         end
 
@@ -126,8 +127,8 @@ module Unused
         end
 
         it 'ignores methods defined outside configured path' do
-          expect { Registry.register(SampleModule) }.
-            not_to(change { Registry.instance_method_calls })
+          expect { Registry.register(SampleModule) }
+            .not_to(change { Registry.instance_method_calls })
         end
       end
     end
