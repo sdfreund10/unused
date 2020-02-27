@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "unused/version"
 require_relative 'unused/registry'
 require_relative 'unused/reporter'
 require_relative 'unused/definition_listener'

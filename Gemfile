@@ -2,7 +2,9 @@
 
 source "https://rubygems.org"
 
-git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
+# Specify your gem's dependencies in unused.gemspec
+gemspec
 
-gem "rspec", group: :test
+gem "rake", "~> 12.0"
+gem "rspec"
 gem 'pry', group: :test
